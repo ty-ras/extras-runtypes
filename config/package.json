@@ -1,6 +1,6 @@
 {
   "name": "@ty-ras-extras/config-runtypes",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": {
     "name": "Stanislav Muhametsin",
     "email": "346799+stazz@users.noreply.github.com",
@@ -27,10 +27,10 @@
   "module": "./dist-esm/index.js",
   "types": "./dist-ts/index.d.ts",
   "exports": {
-    ".": {
-      "types": "./dist-ts/index.d.ts",
-      "import": "./dist-esm/index.js",
-      "require": "./dist-cjs/index.js"
+    "./*": {
+      "types": "./dist-ts/*.d.ts",
+      "import": "./dist-esm/*.js",
+      "require": "./dist-cjs/*.js"
     }
   },
   "dependencies": {},
