@@ -69,3 +69,30 @@ test("Validate that validateRows invokes given validation", async (c) => {
     instanceOf: errors.SQLQueryOutputValidationError,
   });
 });
+
+test("Validate that validateOneRow invokes given validation", async (c) => {
+  c.plan(3);
+  const firstQueryResult = ["returnedRow"];
+  const secondQueryResult = ["one", "two"];
+  const thirdQueryResult = "bad-query";
+  const { usingMockedClient } = common.createMockedClientProvider([
+    firstQueryResult,
+    secondQueryResult,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    thirdQueryResult as any,
+  ]);
+  const executor = spec.validateOneRow(
+    input.prepareSQL`SELECT 1`(usingMockedClient),
+    // Validator for single row, not many rows!
+    t.String,
+  );
+  c.deepEqual(await executor([]), "returnedRow");
+  await c.throwsAsync(async () => await executor([]), {
+    instanceOf: errors.SQLQueryOutputValidationError,
+    message: "Expected array to contain exactly one element, but contained 2.",
+  });
+  await c.throwsAsync(async () => await executor([]), {
+    instanceOf: errors.SQLQueryOutputValidationError,
+    message: "Expected string[], but was string",
+  });
+});
